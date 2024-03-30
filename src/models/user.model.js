@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const userModel = new Schema(
+const userSchema = new Schema(
   {
     username: {
       type: String,
@@ -40,7 +40,7 @@ const userModel = new Schema(
       type: String,
       required: [true, "Password is required"],
     },
-    refreshtoken: {
+    refreshToken: {
       type: String,
     },
   },
@@ -50,7 +50,7 @@ const userModel = new Schema(
 userSchema.pre("save", async function (next) {
   if (!isModified("password")) return next();
 
-  this.password = bcrypt.hash(this.password, 10);
+  this.password = await bcrypt.hash(this.password, 10);
   nextTick();
 });
 
@@ -88,4 +88,4 @@ userSchema.methods.generateRefreshToken = function () {
   );
 };
 
-export const User = mongoose.model("User", userModel);
+export const User = mongoose.model("User", userSchema);
